@@ -14,16 +14,16 @@ async fn handler(
     }
 
     let mut query_params = query.into_inner();
-
     let request_uri: Vec<&str> = request.path().split("/").collect();
-    let mut params: Vec<&str> = Vec::new();
+    let mut params: HashMap<String, String> = HashMap::new();
     for (k, v) in request.match_pattern().unwrap().split("/").enumerate() {
-        let p = request_uri[k];
-        if v == p {
+        let m = String::from(v);
+        let p = String::from(request_uri[k]);
+        if m == p {
             continue;
         }
 
-        params.push(p);
+        params.insert(m, p);
     }
     
     query_params.insert("path".to_string(), request.path().to_string());
@@ -40,17 +40,13 @@ async fn handler(
     let body= res.body().await.unwrap();
     let content_type = res.headers().get("Content-Type");
 
-    println!("{:?}", body);
-    println!("{:?}", content_type);
-    println!("{:?}", params);
-
     HttpResponse::Ok().content_type(content_type.unwrap()).body(body)
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
-        App::new()
+       App::new()
         .route("/static/{id}", web::get().to(handler))
         .route("/static/{id}", web::post().to(handler))
         .route("/static/{id}", web::put().to(handler))
