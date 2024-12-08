@@ -14,6 +14,17 @@ async fn handler(
     }
 
     let mut query_params = query.into_inner();
+
+    let request_uri: Vec<&str> = request.path().split("/").collect();
+    let mut params: Vec<&str> = Vec::new();
+    for (k, v) in request.match_pattern().unwrap().split("/").enumerate() {
+        let p = request_uri[k];
+        if v == p {
+            continue;
+        }
+
+        params.push(p);
+    }
     
     query_params.insert("path".to_string(), request.path().to_string());
     query_params.insert("match".to_string(), request.match_pattern().unwrap());
@@ -31,6 +42,7 @@ async fn handler(
 
     println!("{:?}", body);
     println!("{:?}", content_type);
+    println!("{:?}", params);
 
     HttpResponse::Ok().content_type(content_type.unwrap()).body(body)
 }
@@ -39,11 +51,11 @@ async fn handler(
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-        .route("/static/{id:.*}", web::get().to(handler))
-        .route("/static/{id:.*}", web::post().to(handler))
-        .route("/static/{id:.*}", web::put().to(handler))
-        .route("/static/{id:.*}", web::patch().to(handler))
-        .route("/static/{id:.*}", web::delete().to(handler))
+        .route("/static/{id}", web::get().to(handler))
+        .route("/static/{id}", web::post().to(handler))
+        .route("/static/{id}", web::put().to(handler))
+        .route("/static/{id}", web::patch().to(handler))
+        .route("/static/{id}", web::delete().to(handler))
     })
     .workers(17)
     .bind(("127.0.0.1", 8080))?
