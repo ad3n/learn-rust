@@ -1,0 +1,30 @@
+{
+    "address": "localhost:8080",
+    "endpoints": {
+        "/get": {
+            "host": "https://httpbin.org",
+            "path": "/anything",
+            "method": "get"
+        },
+        "/post": {
+            "host": "https://httpbin.org",
+            "path": "/anything",
+            "method": "post"
+        },
+        "/put": {
+            "host": "https://httpbin.org",
+            "path": "/anything",
+            "method": "put"
+        },
+        "/patch": {
+            "host": "https://httpbin.org",
+            "path": "/anything",
+            "method": "patch"
+        },
+        "/delete": {
+            "host": "https://httpbin.org",
+            "path": "/anything",
+            "method": "delete"
+        }
+    }
+}
